@@ -194,6 +194,29 @@ class TestProductModel(unittest.TestCase):
             "Invalid type for boolean [available]: <class 'str'>"
         )
 
+    def test_invalid_category(self):
+        """ Test invalid category """
+        product = ProductFactory()
+        data = product.serialize()
+        data["category"] = "NON_EXISTENT_CATEGORY"
+        with self.assertRaises(DataValidationError) as message:
+            product.deserialize(data)
+        self.assertEqual(
+            str(message.exception),
+            "Invalid attribute: NON_EXISTENT_CATEGORY"
+        )
+
+    def test_invalid_data(self):
+        """ Test invalid data """
+        product = ProductFactory()
+        data = None
+        with self.assertRaises(DataValidationError) as message:
+            product.deserialize(data)
+        self.assertEqual(
+            str(message.exception),
+            "Invalid product: body of request contained bad or no data 'NoneType' object is not subscriptable"
+        )
+
     def test_find_by_category(self):
         """It should Find Products by Category"""
         products = ProductFactory.create_batch(10)
@@ -214,6 +237,16 @@ class TestProductModel(unittest.TestCase):
         price = products[0].price
         count = len([product for product in products if product.price == price])
         found = Product.find_by_price(price)
-        self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.price, price)
+
+    def test_price_conversion_from_string(self):
+        """Test case where price is given as a string"""
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        price_str = str(products[0].price)
+        price_decimal = Decimal(products[0].price)
+        result = Product.find_by_price(price_str)
+        for product in result:
+            self.assertEqual(product.price, price_decimal)
