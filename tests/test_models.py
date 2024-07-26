@@ -102,7 +102,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.category, product.category)
 
 ######################################################################
-#  READ A PRODUCT TEST CASE
+#  READ test case
 ######################################################################
 
     def test_read_a_product(self):
@@ -118,7 +118,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_product.price, product.price)
 
 ######################################################################
-#  UPDATE A PRODUCT TEST CASE
+#  UPDATE test case
 ######################################################################
 
     def test_update_a_product(self):
@@ -146,7 +146,7 @@ class TestProductModel(unittest.TestCase):
         self.assertRaises(DataValidationError, product.update)
 
 ######################################################################
-#  DELETE A PRODUCT
+#  DELETE test case
 ######################################################################
 
     def test_delete_a_product(self):
@@ -158,7 +158,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(len(Product.all()), 0)
 
 ######################################################################
-#  LIST ALL PRODUCTS
+#  LIST ALL test case
 ######################################################################
 
     def test_list_all_products(self):
@@ -171,7 +171,7 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(len(product.all()), 5)
 
 ######################################################################
-#  FIND A PRODUCT BY NAME
+#  FIND BY NAME test case
 ######################################################################
 
     def test_find_by_name(self):
@@ -187,7 +187,7 @@ class TestProductModel(unittest.TestCase):
             self.assertEqual(product.name, first_product)
 
 ######################################################################
-#  FINAD A PRODUCT BY AVAILABILITY
+#  FINAD BY AVAILABILITY test case
 ######################################################################
 
     def test_find_by_availability(self):
@@ -238,7 +238,7 @@ class TestProductModel(unittest.TestCase):
         )
 
 ######################################################################
-#  FIND A PRODUCT BY CATEGORY
+#  FIND BY CATEGORY test case
 ######################################################################
 
     def test_find_by_category(self):
