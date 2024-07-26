@@ -1,6 +1,8 @@
 # Local environment
 .DS_Store
 Thumbs.db
+.venv
+.gitignore
 
 # Vagrant
 .vagrant/
