@@ -114,15 +114,18 @@ def list_products():
     # test to see if you received the "name" query parameter
     if name:
         app.logger.info("Find by name: %s", name)
-        # If you did, call the Product.find_by_name(name) method to retrieve products that match the specified name
+        # If you did, call the Product.find_by_name(name) method
+        # to retrieve products that match the specified name
         products = Product.find_by_name(name)
 
     # test to see if you received the "category" query parameter
     elif category:
         app.logger.info("Find by category: %s", category)
-        # If you did, convert the category string retrieved from the query parameters to the corresponding enum value from the Category enumeration
+        # If you did, convert the category string retrieved from the query parameters
+        # to the corresponding enum value from the Category enumeration
         category_value = getattr(Category, category.upper())
-        # call the Product.find_by_category(category_value) method to retrieve products that match the specified category_value
+        # call the Product.find_by_category(category_value) method to retrieve products
+        # that match the specified category_value
         products = Product.find_by_category(category_value)
 
     # test to see if you received the "available" query parameter
@@ -130,7 +133,8 @@ def list_products():
         app.logger.info("Find by category: %s", category)
         # If you did, convert the available string retrieved from the query parameters to a boolean value
         available_value = available.lower() in ["true", "yes", "1"]
-        # call the Product.find_by_availability(available_value) method to retrieve products that match the specified available_value     
+        # call the Product.find_by_availability(available_value) method to retrieve products that
+        # match the specified available_value
         products = Product.find_by_availability(available_value)
 
     else:
@@ -141,13 +145,14 @@ def list_products():
     # create a list of serialize() products
     results = [product.serialize() for product in products]
     # log the number of products being returned in the list
-    app.logger.info(f"{len(results)} Products returned.") 
+    app.logger.info(f"{len(results)} Products returned.")
     # return the list with a return code of status.HTTP_200_OK
     return results, status.HTTP_200_OK
 
 ######################################################################
 # R E A D   A   P R O D U C T
 ######################################################################
+
 
 @app.route("/products/<int:product_id>", methods=["GET"])
 def get_products(product_id):
