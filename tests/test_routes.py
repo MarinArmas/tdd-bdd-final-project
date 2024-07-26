@@ -28,6 +28,7 @@ import os
 import logging
 from decimal import Decimal
 from unittest import TestCase
+from urllib.parse import quote_plus
 from service import app
 from service.common import status
 from service.models import db, init_db, Product
@@ -211,12 +212,90 @@ class TestProductRoutes(TestCase):
         # assert that the resp.status_code is status.HTTP_204_NO_CONTENT
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # check if the response data is empty 
-        if not response:
-            
+        self.assertEqual(len(response.data), 0)
         # send a self.client.get request to the same endpoint that was deleted to retrieve the deteled product
+        response = self.client.get(f"{BASE_URL}/{test_product.id}")
         # assert that the resp.status_code is status.HTTP_404_NOT_FOUND to confirm deletion of the product
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         # retrieve the count of products after the deletion operation
+        new_count = self.get_product_count()
         # check if the new count of products is one less than the initial count
+        self.assertEqual(new_count, count - 1)
+
+    def test_get_product_list(self):
+        """It should Get a list of Products"""
+        self._create_products(5)
+        # send a self.client.get() request to the BASE_URL
+        response = self.client.get(BASE_URL)
+        # assert that the resp.status_code is status.HTTP_200_OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # get the data from resp.get_json()
+        data = response.get_json()
+        # assert that the len() of the data is 5 (the number of products you created)
+        self.assertEqual(len(data), 5)
+
+    def test_query_by_name(self):
+        """It should Query Products by name"""
+        products = self._create_products(5)
+        # extract the name of the first product in the products list and assigns it to the variable test_name
+        test_name = products[0].name
+        # count the number of products in the products list that have the same name as the test_name
+        name_count = len([product for product in products if product.name == test_name])
+        # send an HTTP GET request to the URL specified by the BASE_URL variable, along with a query parameter "name"
+        response = self.client.get(BASE_URL, query_string=f"name={quote_plus(test_name)}")
+        # assert that response status code is 200, indicating a successful request (HTTP 200 OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # retrieve the JSON data from the response
+        data = response.get_json()
+        # assert that the length of the data list (i.e., the number of products returned in the response) is equal to name_count
+        self.assertEqual(len(data), name_count)
+        # use a for loop to iterate through the products in the data list and checks if each product's name matches the test_name
+        for product in data:
+            self.assertEqual(product["name"], test_name)
+
+    def test_query_by_category(self):
+        """It should Query Products by category"""
+        products = self._create_products(10)
+        # retrieves the category of the first product in the products list and assigns it to the variable category
+        category = products[0].category
+        # create a list named found, containing products from the products list whose category matches the category variable
+        found = [product for product in products if product.category == category]
+        # check the count of products match the specified category and assign it to the variable found_count
+        found_count = len(found)
+        # Log a debug message indicating the count and details of the products found
+        logging.debug(f"Found {found_count} {found}")
+        # send an HTTP GET request to the URL specified by the BASE_URL variable, along with a query parameter "category"
+        response = self.client.get(BASE_URL, query_string=f"category={quote_plus(category.name)}")
+        # assert that response status code is 200, indicating a successful request (HTTP 200 OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # retrieve the JSON data from the response
+        data = response.get_json()
+        # assert that the length of the data list (i.e., the number of products returned in the response) is equal to found_count
+        self.assertEqual(len(data), found_count)
+        # use a for loop to check each product in the data list and verify that all returned products belong to the queried category
+        for product in data:
+            self.assertEqual(product["category"], category.name)
+
+    def test_query_by_availability(self):
+        """It should Query Products by availability"""
+        products = self._create_products(10)
+        # list named available_products is initialized to store the products based on their availability status
+        available_products = [product for product in products if product.available is True]
+        # store the  count of available products.
+        count = len(available_products)
+        # Log a debug message indicating the count and details of the available products
+        logging.debug(f"Found {count} available products")
+        # send an HTTP GET request to the URL specified by the BASE_URL variable, along with a query parameter "available" set to true.
+        response = self.client.get(BASE_URL, query_string=f"available=True")
+        # assert that response status code is 200, indicating a successful request (HTTP 200 OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # retrieve the JSON data from the response
+        data = response.get_json()
+        # assert that the length of the data list (i.e., the number of products returned in the response) is equal to available_count
+        self.assertEqual(len(data), count)
+        # use a for loop to check each product in the data list and verify that the "available" attribute of each product is set to True
+        for product in data:
+            self.assertEqual(product["available"], True)
 
     ######################################################################
     # Utility functions
