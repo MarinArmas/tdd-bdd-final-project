@@ -164,9 +164,9 @@ class TestProductRoutes(TestCase):
         response = self.client.post(BASE_URL, data={}, content_type="plain/text")
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    #
-    # ADD YOUR TEST CASES HERE
-    #
+######################################################################
+#  READ test case
+######################################################################
 
     def test_get_product(self):
         """It should Get a single Product"""
@@ -181,6 +181,10 @@ class TestProductRoutes(TestCase):
         """It should not Get a Product thats not found"""
         response = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+######################################################################
+#  UPDATE test case
+######################################################################
 
     def test_update_product(self):
         """It should Update an existing Product"""
@@ -197,6 +201,10 @@ class TestProductRoutes(TestCase):
         # Test product not found
         response = self.client.put(f"{BASE_URL}/0", json=new_product)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+######################################################################
+#  DELETE test case
+######################################################################
 
     def test_delete_product(self):
         """It should Delete a Product"""
@@ -223,6 +231,10 @@ class TestProductRoutes(TestCase):
         # check if the new count of products is one less than the initial count
         self.assertEqual(new_count, count - 1)
 
+######################################################################
+#  LIST ALL test case
+######################################################################
+
     def test_get_product_list(self):
         """It should Get a list of Products"""
         self._create_products(5)
@@ -234,6 +246,10 @@ class TestProductRoutes(TestCase):
         data = response.get_json()
         # assert that the len() of the data is 5 (the number of products you created)
         self.assertEqual(len(data), 5)
+
+######################################################################
+#  LIST BY NAME test case
+######################################################################
 
     def test_query_by_name(self):
         """It should Query Products by name"""
@@ -256,6 +272,10 @@ class TestProductRoutes(TestCase):
         # if each product's name matches the test_name
         for product in data:
             self.assertEqual(product["name"], test_name)
+
+######################################################################
+#  LIST BY CATEGORY test case
+######################################################################
 
     def test_query_by_category(self):
         """It should Query Products by category"""
@@ -284,6 +304,10 @@ class TestProductRoutes(TestCase):
         # all returned products belong to the queried category
         for product in data:
             self.assertEqual(product["category"], category.name)
+
+######################################################################
+#  LIST BY AVAILABILITY test case
+######################################################################
 
     def test_query_by_availability(self):
         """It should Query Products by availability"""
