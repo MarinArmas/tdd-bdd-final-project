@@ -101,9 +101,9 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(new_product.available, product.available)
         self.assertEqual(new_product.category, product.category)
 
-    #
-    # ADD YOUR TEST CASES HERE
-    #
+######################################################################
+#  READ A PRODUCT TEST CASE
+######################################################################
 
     def test_read_a_product(self):
         """It should Read a Product"""
@@ -116,6 +116,10 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_product.name, product.name)
         self.assertEqual(found_product.description, product.description)
         self.assertEqual(found_product.price, product.price)
+
+######################################################################
+#  UPDATE A PRODUCT TEST CASE
+######################################################################
 
     def test_update_a_product(self):
         """It should Update a Product"""
@@ -141,6 +145,10 @@ class TestProductModel(unittest.TestCase):
         product.id = None
         self.assertRaises(DataValidationError, product.update)
 
+######################################################################
+#  DELETE A PRODUCT
+######################################################################
+
     def test_delete_a_product(self):
         """It should Delete a Product"""
         product = ProductFactory()
@@ -148,6 +156,10 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(len(Product.all()), 1)
         product.delete()
         self.assertEqual(len(Product.all()), 0)
+
+######################################################################
+#  LIST ALL PRODUCTS
+######################################################################
 
     def test_list_all_products(self):
         """It should List all Products in the database"""
@@ -157,6 +169,10 @@ class TestProductModel(unittest.TestCase):
             product = ProductFactory()
             product.create()
         self.assertEqual(len(product.all()), 5)
+
+######################################################################
+#  FIND A PRODUCT BY NAME
+######################################################################
 
     def test_find_by_name(self):
         """It should Find a Product by Name"""
@@ -169,6 +185,10 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found_products.count(), count)
         for product in found_products:
             self.assertEqual(product.name, first_product)
+
+######################################################################
+#  FINAD A PRODUCT BY AVAILABILITY
+######################################################################
 
     def test_find_by_availability(self):
         """It should Find Products by Availability"""
@@ -216,6 +236,10 @@ class TestProductModel(unittest.TestCase):
             str(message.exception),
             "Invalid product: body of request contained bad or no data 'NoneType' object is not subscriptable"
         )
+
+######################################################################
+#  FIND A PRODUCT BY CATEGORY
+######################################################################
 
     def test_find_by_category(self):
         """It should Find Products by Category"""
