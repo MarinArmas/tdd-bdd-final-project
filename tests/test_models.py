@@ -206,8 +206,8 @@ class TestProductModel(unittest.TestCase):
             "Invalid attribute: NON_EXISTENT_CATEGORY"
         )
 
-    def test_invalid_data(self):
-        """ Test invalid data """
+    def test_no_data(self):
+        """ Test no data """
         product = ProductFactory()
         data = None
         with self.assertRaises(DataValidationError) as message:
@@ -235,7 +235,6 @@ class TestProductModel(unittest.TestCase):
         for product in products:
             product.create()
         price = products[0].price
-        count = len([product for product in products if product.price == price])
         found = Product.find_by_price(price)
         for product in found:
             self.assertEqual(product.price, price)
